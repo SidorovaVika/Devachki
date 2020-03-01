@@ -6,6 +6,15 @@
 </head>
 <body>
 <h1>{{dep.name}}</h1>
+{% if director %}
+<p>Руководитель: <a href="{{url_for('user',user_id=director.id)}}">{{director.name}} {{director.surname}}</a></p>
+<p>Телефон: {{ director.phone }}</p>
+<p>E-mail: {{ director.email }}</p>
+{% endif %}
+<p>Заместители руководителя:</p>
+{% for zam in fed_zam %}
+<a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+{% endfor %}
 <p>Список отделений (количество сотрудников):</p>
 {% for i in range(chil|length) %}
 <p><a href="{{url_for('regional',dep_id=chil[i].id)}}">{{chil[i].name}}</a>     {{chil_chil[i]}}</p>

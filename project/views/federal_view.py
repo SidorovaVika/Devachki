@@ -21,4 +21,9 @@ class FederalView(View):
                         UserDepartment.dismissal_date.is_(None)).all()))
         for i in range(len(chil_chil)):
             chil_chil[i]=sum(chil_chil[i])
-        return render_template('federal.html',chil=chil,user_id=current_user.get_id(),dep=dep,chil_chil=chil_chil)
+        director=User.query.join(User.user_departments).filter(UserDepartment.post == "Руководитель Федерального Отделения").filter(
+            UserDepartment.dismissal_date.is_(None)).first()
+        fed_zam = User.query.join(User.user_departments).filter(
+            UserDepartment.dismissal_date.is_(None)).filter(
+            UserDepartment.post == "Заместитель Руководителя Федерального Отделения").all()
+        return render_template('federal.html',chil=chil,user_id=current_user.get_id(),dep=dep,chil_chil=chil_chil,director=director,fed_zam=fed_zam)

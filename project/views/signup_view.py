@@ -18,7 +18,7 @@ class SignupView(View):
                 user=User(name=form.name.data,surname=form.surname.data,email=form.email.data,phone=form.phone.data,password=generate_password_hash(form.password.data))
                 db.session.add(user)
                 db.session.commit()
-                user_dep_id = UserDepartment(user_id=user.id, department_id=Department.query.filter(Department.name == form.department.data).first().id,employment_date=datetime.date.today(),dismissal_date=None)
+                user_dep_id = UserDepartment(user_id=user.id, department_id=Department.query.filter(Department.name == form.department.data).first().id,post="Пользователь",employment_date=datetime.date.today(),dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
                 login_user(LoginUser(user))
