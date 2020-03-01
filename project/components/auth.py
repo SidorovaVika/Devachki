@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from models.user import User
+from models.departments import Department
 
 class LoginUser(UserMixin):
     def __init__(self, user):

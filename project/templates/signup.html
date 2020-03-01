@@ -39,6 +39,14 @@
         {% endfor %}
         </ul>
         {% endif %}
+        {{form.department.label}}<br> {{form.department()}}<br>
+        {% if form.department.errors %}
+        <ul class="errors">
+        {% for error in form.department.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
     {{form.password.label}} <br>{{form.password()}}<br>
         {% if form.password.errors %}
         <ul class="errors">

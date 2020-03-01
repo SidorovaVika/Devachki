@@ -8,4 +8,5 @@ class User(db.Model):
     surname = db.Column(db.VARCHAR(200), nullable=False)
     email = db.Column(db.VARCHAR(200), nullable=False, unique=True)
     phone = db.Column(db.VARCHAR(200), nullable=False)
+    department=db.Column(db.VARCHAR(200), nullable=False)
     password = db.Column(db.VARCHAR(200), nullable=False)

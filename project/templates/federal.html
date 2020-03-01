@@ -5,6 +5,17 @@
     <title>Федеральное отделение</title>
 </head>
 <body>
-<p>Список региональных отделений (количество сотрудников):</p><br>
+<h1>{{chil[0].parent}}</h1>
+<p>Список отделений (количество сотрудников):</p>
+{% for dep in chil %}
+<a href="{{url_for('regional',parent_id=dep.id)}}">{{dep.name}}</a><br><br>
+{% endfor %}
+<form action="{{url_for('user',user_id=user_id)}}">
+    <button type="submit">Моя страница</button>
+</form>
+<br>
+<form action="/logout">
+    <button type="submit">Выйти</button>
+</form>
 </body>
 </html>

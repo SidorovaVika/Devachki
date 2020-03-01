@@ -5,11 +5,16 @@
     <title>Страница пользователя</title>
 </head>
 <body>
-<p>Имя: {{}}</p>
-<p>Фамилия: {{}}</p>
-<p>E-mail: {{}}</p>
-<p>Телефон: {{}}</p><br>
-<a href="local.html">Отделение</a>
-
+<p>Имя: {{user.name}}</p>
+<p>Фамилия: {{user.surname}}</p>
+{% if our_dep_id==dep.id %}
+<p>E-mail: {{user.email}}</p>
+<p>Телефон: {{user.phone}}</p><br>
+{% endif %}
+<a href="{{url_for('local',dep_id=dep.id)}}">Отделение</a>
+<br>
+<form action="/logout">
+    <button type="submit">Выйти</button>
+</form>
 </body>
 </html>
