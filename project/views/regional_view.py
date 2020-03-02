@@ -17,7 +17,7 @@ class RegionalView(View):
         ).filter(
             UserDepartment.department_id.in_([i.id for i in chil])
         ).filter(
-            UserDepartment.dismissal_date.is_(None)).group_by(UserDepartment.department_id).all()
+            UserDepartment.dismissal_date.is_(None)).filter(UserDepartment.post=="Сотрудник").group_by(UserDepartment.department_id).all()
         count_users=dict(count_users)
         parent = Department.query.filter(Department.id == dep.parent_id).first()
         reg_dir = User.query.join(User.user_departments).filter(UserDepartment.department_id.in_([i.id for i in chil])).filter(

@@ -18,7 +18,7 @@ class FederalView(View):
             chil_chil.append([])
             for j in chil_id[i]:
                 chil_chil[i].append(len(User.query.join(User.user_departments).filter(UserDepartment.department_id == j).filter(
-                        UserDepartment.dismissal_date.is_(None)).all()))
+                        UserDepartment.dismissal_date.is_(None)).filter(UserDepartment.post=="Сотрудник").all()))
         for i in range(len(chil_chil)):
             chil_chil[i]=sum(chil_chil[i])
         director=User.query.join(User.user_departments).filter(UserDepartment.post == "Руководитель Федерального Отделения").filter(

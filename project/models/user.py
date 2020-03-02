@@ -1,5 +1,6 @@
 from sqlalchemy import func
 from models import db
+from models.user_department import UserDepartment
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -11,3 +12,8 @@ class User(db.Model):
     password = db.Column(db.VARCHAR(200), nullable=False)
 
     user_departments = db.relationship('UserDepartment')
+
+
+    def get_role(self):
+        return User.query.join(User.user_departments).filter(
+            UserDepartment.user_id==self.id).first().post

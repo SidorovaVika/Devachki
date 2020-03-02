@@ -7,12 +7,19 @@
 <body>
 <p>Имя: {{user.name}}</p>
 <p>Фамилия: {{user.surname}}</p>
-{% if our_dep_id==dep.id %}
-<p>E-mail: {{user.email}}</p>
-<p>Телефон: {{user.phone}}</p><br>
+{% if director %}
+    <p>E-mail: {{user.email}}</p>
+    <p>Телефон: {{user.phone}}</p><br>
+{% else %}
+    {% if our_dep_id==dep.id %}
+    <p>E-mail: {{user.email}}</p>
+    <p>Телефон: {{user.phone}}</p><br>
+    {% endif %}
 {% endif %}
-<a href="{{url_for('local',dep_id=dep.id)}}">Отделение</a>
+{% if dep %}
+    <a href="{{url_for('local',dep_id=dep.id)}}">Отделение</a>
 <br>
+{% endif %}
 {% if user.id==cur_user_id %}
     {% if director %}
         <form action="/add_staff">
@@ -23,6 +30,9 @@
     {% if director %}
         <form action="{{url_for('change',user_id=user.id,var=1)}}">
             <button type="submit">Назначить заместителем рукводителя федерального отделения</button>
+            {% if get_flashed_messages() %}
+                <p>{{ get_flashed_messages()[0] }}</p>
+                {% endif %}
         </form>
         <form action="{{url_for('change',user_id=user.id,var=2)}}">
             <button type="submit">Назначить рукводителем регинального отделения</button>

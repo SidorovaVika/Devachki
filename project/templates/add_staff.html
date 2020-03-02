@@ -5,6 +5,13 @@
     <title>Принять сотрудников</title>
 </head>
 <body>
+<form action="{{url_for('user',user_id=user_id)}}">
+    <button type="submit">Моя страница</button>
+</form>
+<br>
+<form action="/logout">
+    <button type="submit">Выйти</button>
+</form>
 <p>Пользователи</p>
 {% for user in users%}
 <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a>
@@ -13,12 +20,6 @@
 </form><br><br>
 {% endfor %}
 
-<form action="{{url_for('user',user_id=user_id)}}">
-    <button type="submit">Моя страница</button>
-</form>
-<br>
-<form action="/logout">
-    <button type="submit">Выйти</button>
-</form>
+
 </body>
 </html>
