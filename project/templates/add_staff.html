@@ -15,7 +15,7 @@
 <p>Пользователи</p>
 {% for user in users%}
 <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a>
-    <form action="{{url_for('change',user_id=user.id,var=7)}}">
+    <form action="{{url_for('change',user_id=user.id,var='add_staff')}}">
     <button type="submit">Принять</button>
 </form><br><br>
 {% endfor %}

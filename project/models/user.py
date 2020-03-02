@@ -15,5 +15,4 @@ class User(db.Model):
 
 
     def get_role(self):
-        return User.query.join(User.user_departments).filter(
-            UserDepartment.user_id==self.id).first().post
+        return UserDepartment.query.filter(UserDepartment.user_id==self.id).filter(UserDepartment.dismissal_date==None).first().post

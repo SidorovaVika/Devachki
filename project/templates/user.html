@@ -7,49 +7,37 @@
 <body>
 <p>Имя: {{user.name}}</p>
 <p>Фамилия: {{user.surname}}</p>
-{% if director %}
+{% if dis_indic %}
     <p>E-mail: {{user.email}}</p>
     <p>Телефон: {{user.phone}}</p><br>
 {% else %}
-    {% if our_dep_id==dep.id %}
+    {% if local_indic %}
     <p>E-mail: {{user.email}}</p>
     <p>Телефон: {{user.phone}}</p><br>
     {% endif %}
 {% endif %}
-{% if dep %}
-    <a href="{{url_for('local',dep_id=dep.id)}}">Отделение</a>
+<a href="{{url_for('local',dep_id=dep.id)}}">{{ dep.name }}</a>
 <br>
-{% endif %}
+
 {% if user.id==cur_user_id %}
-    {% if director %}
+    {% if post!='Сотрудник' and post!='Пользователь' %}
         <form action="/add_staff">
             <button type="submit">Принять сотрудников</button>
         </form>
     {% endif %}
 {% else %}
-    {% if director %}
-        <form action="{{url_for('change',user_id=user.id,var=1)}}">
-            <button type="submit">Назначить заместителем рукводителя федерального отделения</button>
-            {% if get_flashed_messages() %}
-                <p>{{ get_flashed_messages()[0] }}</p>
+        {% for act in actions %}
+            {% if act in opportunities%}
+                {% if dis_indic %}
+                    <form action="{{url_for('change',user_id=user.id,var=act)}}">
+                        <button type="submit">{{actions[act][0]}}</button>
+                    </form>
                 {% endif %}
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=2)}}">
-            <button type="submit">Назначить рукводителем регинального отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=3)}}">
-            <button type="submit">Назначить заместителем рукводителя регионального отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=4)}}">
-            <button type="submit">Назначить рукводителем местного отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=5)}}">
-            <button type="submit">Назначить заместителем рукводителя местного отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=6)}}">
-            <button type="submit">Уволить</button>
-        </form>
-        {% endif %}
+            {% endif %}
+        {% endfor %}
+{% if get_flashed_messages() %}
+    <p>{{ get_flashed_messages()[0] }}</p>
+{% endif %}
     <form action="{{url_for('user',user_id=cur_user_id)}}">
         <button type="submit">Моя страница</button>
     </form>
