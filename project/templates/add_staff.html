@@ -12,6 +12,9 @@
 <form action="/logout">
     <button type="submit">Выйти</button>
 </form>
+{% if get_flashed_messages() %}
+    <p>{{ get_flashed_messages()[0] }}</p>
+{% endif %}
 <p>Пользователи</p>
 {% for user in users%}
 <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a>

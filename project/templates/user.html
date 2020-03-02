@@ -7,44 +7,53 @@
 <body>
 <p>Имя: {{user.name}}</p>
 <p>Фамилия: {{user.surname}}</p>
-{% if dis_indic %}
-    <p>E-mail: {{user.email}}</p>
-    <p>Телефон: {{user.phone}}</p><br>
-{% else %}
-    {% if local_indic %}
-    <p>E-mail: {{user.email}}</p>
-    <p>Телефон: {{user.phone}}</p><br>
+{% if current_user.is_authenticated %}
+    {% if dis_indic or local_indic and post!='Пользователь'%}
+        <p>E-mail: {{user.email}}</p>
+        <p>Телефон: {{user.phone}}</p><br>
+        <p>Должности сотрудника: </p>
+        {% for post in user_posts %}
+        <p>{{ post.post }} c {{ post.employment_date }}{% if post.dismissal_date %} по {{ post.dismissal_date }}{% endif %}</p>
+        {% endfor %}
     {% endif %}
-{% endif %}
-<a href="{{url_for('local',dep_id=dep.id)}}">{{ dep.name }}</a>
-<br>
+    <a href="{{url_for('local',dep_id=dep.id)}}">{{ dep.name }}</a>
+    <br>
 
-{% if user.id==cur_user_id %}
-    {% if post!='Сотрудник' and post!='Пользователь' %}
-        <form action="/add_staff">
-            <button type="submit">Принять сотрудников</button>
+    {% if user.id==cur_user_id %}
+        {% if post!='Сотрудник' and post!='Пользователь' %}
+            <form action="/add_staff">
+                <button type="submit">Принять сотрудников</button>
+            </form>
+        {% endif %}
+    {% else %}
+            {% for act in actions %}
+                {% if act in opportunities%}
+                    {% if dis_indic %}
+                        <form action="{{url_for('change',user_id=user.id,var=act)}}">
+                            <button type="submit">{{actions[act][0]}}</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+    {% if get_flashed_messages() %}
+        <p>{{ get_flashed_messages()[0] }}</p>
+    {% endif %}
+        <form action="{{url_for('user',user_id=cur_user_id)}}">
+            <button type="submit">Моя страница</button>
         </form>
     {% endif %}
+    <br>
+    <form action="/logout">
+        <button type="submit">Выйти</button>
+    </form>
 {% else %}
-        {% for act in actions %}
-            {% if act in opportunities%}
-                {% if dis_indic %}
-                    <form action="{{url_for('change',user_id=user.id,var=act)}}">
-                        <button type="submit">{{actions[act][0]}}</button>
-                    </form>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-{% if get_flashed_messages() %}
-    <p>{{ get_flashed_messages()[0] }}</p>
-{% endif %}
-    <form action="{{url_for('user',user_id=cur_user_id)}}">
-        <button type="submit">Моя страница</button>
+    <p>Просмотр страницы доступен только сотрудникам</p>
+    <form action="/login">
+        <button>Войти</button>
+    </form>
+    <form action="/signup">
+        <button>Зарегистрироваться</button>
     </form>
 {% endif %}
-<br>
-<form action="/logout">
-    <button type="submit">Выйти</button>
-</form>
 </body>
 </html>

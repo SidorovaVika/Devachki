@@ -35,8 +35,13 @@ class UserView(View):
                  'Руководитель Местного Отделения', 'Заместитель Руководителя Местного Отделения'])
         }
         user = User.query.filter(User.id == user_id).first()
+        if not(current_user.is_authenticated):
+            return render_template('user.html', user=user)
+
+        user_posts=UserDepartment.query.filter(UserDepartment.user_id==user_id).all()
         dep_id=UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id
         dep=Department.query.filter(Department.id == dep_id).first()
+        print([(i.name, i.name) for i in Department.query.filter(Department.level==3).all()])
         user_regional_dep_id=dep.parent_id
         cur_user_id = int(current_user.get_id())
         our_dep_id = UserDepartment.query.filter(UserDepartment.user_id == cur_user_id).first().department_id
@@ -54,36 +59,36 @@ class UserView(View):
 
 
         if post=='Руководитель Федерального Отделения':
-            if user_post=='Заместитель Руководителя Федерального Отделения' or user_post=='Руководитель Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Сотрудник':
+            if user_post=='Заместитель Руководителя Федерального Отделения' or user_post=='Руководитель Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Сотрудник' or user_post=='Пользователь':
                 dis_indic=True
 
         if post == 'Заместитель Руководителя Федерального Отделения':
-            if user_post=='Руководитель Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Сотрудник':
+            if user_post=='Руководитель Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Сотрудник' or user_post=='Пользователь':
                 dis_indic=True
 
 
         if post == 'Руководитель Регионального Отделения':
             if regional_indic:
-                if user_post == 'Заместитель Руководителя Регионального Отделения' or user_post == 'Руководитель Местного Отделения' or user_post == 'Сотрудник':
+                if user_post == 'Заместитель Руководителя Регионального Отделения' or user_post == 'Руководитель Местного Отделения' or user_post == 'Сотрудник' or user_post=='Пользователь':
                     dis_indic = True
 
 
         if post == 'Заместитель Руководителя Регионального Отделения':
             if regional_indic:
-                if user_post == 'Руководитель Местного Отделения' or user_post == 'Сотрудник':
+                if user_post == 'Руководитель Местного Отделения' or user_post == 'Сотрудник' or user_post=='Пользователь':
                     dis_indic = True
 
 
         if post == 'Руководитель Местного Отделения':
             if local_indic:
-                if user_post == 'Заместитель Руководителя Местного Отделения' or user_post == 'Сотрудник':
+                if user_post == 'Заместитель Руководителя Местного Отделения' or user_post == 'Сотрудник' or user_post=='Пользователь':
                     dis_indic = True
 
 
         if post == 'Заместитель Руководителя Местного Отделения':
             if local_indic:
-                if user_post == 'Сотрудник':
+                if user_post == 'Сотрудник' or user_post=='Пользователь':
                     dis_indic = True
 
 
-        return render_template('user.html',user=user,dep=dep,cur_user_id=cur_user_id,local_indic=local_indic,opportunities=opportunities,actions=actions,regional_indic=regional_indic,post=post, dis_indic=dis_indic)
+        return render_template('user.html',user=user,dep=dep,cur_user_id=cur_user_id,local_indic=local_indic,opportunities=opportunities,actions=actions,regional_indic=regional_indic,post=post, dis_indic=dis_indic, user_posts=user_posts)

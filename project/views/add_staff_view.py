@@ -4,6 +4,7 @@ from models.user import User
 from flask_login import current_user
 from models.user_department import UserDepartment
 from models.departments import Department
+import random
 
 
 class AddStaffView(View):
@@ -23,5 +24,5 @@ class AddStaffView(View):
         if post=='Руководитель Федерального Отделения' or post=='Заместитель Руководителя Федерального Отделения':
             users=User.query.join(User.user_departments).filter(UserDepartment.post == "Пользователь").filter(
             UserDepartment.dismissal_date.is_(None)).all()
-
+        random.shuffle(users)
         return render_template('add_staff.html',users=users,user_id=user_id)
