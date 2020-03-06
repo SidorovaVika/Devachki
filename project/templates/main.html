@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+</head>
+<body>
+{% if indic %}
+<p>Здравствуйте, это главная страница</p>
+<form action="{{ url_for('logout')}}">
+    <button>Выйти</button>
+</form>
+{% else %}
+<form action="/login">
+    <button>Войти</button>
+</form>
+<form action="/signup">
+    <button>Зарегистрироваться</button>
+</form>
+{% endif %}
+</body>
+</html>
