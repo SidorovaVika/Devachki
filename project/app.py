@@ -1,13 +1,13 @@
 from flask import Flask
 from models import db
-from views import MainView, LoginView, LogoutView, SignupView
+from views import MainView, LoginView, LogoutView, SignupView, LocalView
 from flask import render_template
 from flask_login import LoginManager
 from components.auth import load_user
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://lecture:q556A8kLUrQU@/sidorova?host=rc1b-80ql678cqoo4jq71.mdb.yandexcloud.net&port=6432'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://lecture:q556A8kLUrQU@/team_3?host=rc1b-80ql678cqoo4jq71.mdb.yandexcloud.net&port=6432'
     app.config.update(SECRET_KEY='secret_xxx')
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -16,6 +16,7 @@ def create_app():
     app.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
     app.add_url_rule('/login', view_func=LoginView.as_view('login'),methods=['GET', 'POST'])
     app.add_url_rule('/signup', view_func=SignupView.as_view('signup'),methods=['GET', 'POST'])
+    app.add_url_rule('/local', view_func=LocalView.as_view('local'), methods=['GET', 'POST'])
     db.init_app(app)
 
     return app
