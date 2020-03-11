@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Местное отделение</title>
+</head>
+<body>
+<h1>{{dep.name}}</h1>
+<p>Список сотрудников:</p><br>
+{% for user in users%}
+<a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a><br><br>
+{% endfor %}
+
+<a href="{{url_for('regional',parent_id=parent.id)}}">Региональное отделение</a>
+
+<form action="{{url_for('user',user_id=user_id)}}">
+    <button type="submit">Моя страница</button>
+</form>
+<br>
+<form action="/logout">
+    <button type="submit">Выйти</button>
+</form>
+</body>
+</html>
