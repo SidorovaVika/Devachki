@@ -13,6 +13,38 @@
 {% endif %}
 <a href="{{url_for('local',dep_id=dep.id)}}">Отделение</a>
 <br>
+{% if user.id==cur_user_id %}
+    {% if director %}
+        <form action="/add_staff">
+            <button type="submit">Принять сотрудников</button>
+        </form>
+    {% endif %}
+{% else %}
+    {% if director %}
+        <form action="{{url_for('change',user_id=user.id,var=1)}}">
+            <button type="submit">Назначить заместителем рукводителя федерального отделения</button>
+        </form>
+        <form action="{{url_for('change',user_id=user.id,var=2)}}">
+            <button type="submit">Назначить рукводителем регинального отделения</button>
+        </form>
+        <form action="{{url_for('change',user_id=user.id,var=3)}}">
+            <button type="submit">Назначить заместителем рукводителя регионального отделения</button>
+        </form>
+        <form action="{{url_for('change',user_id=user.id,var=4)}}">
+            <button type="submit">Назначить рукводителем местного отделения</button>
+        </form>
+        <form action="{{url_for('change',user_id=user.id,var=5)}}">
+            <button type="submit">Назначить заместителем рукводителя местного отделения</button>
+        </form>
+        <form action="{{url_for('change',user_id=user.id,var=6)}}">
+            <button type="submit">Уволить</button>
+        </form>
+        {% endif %}
+    <form action="{{url_for('user',user_id=cur_user_id)}}">
+        <button type="submit">Моя страница</button>
+    </form>
+{% endif %}
+<br>
 <form action="/logout">
     <button type="submit">Выйти</button>
 </form>

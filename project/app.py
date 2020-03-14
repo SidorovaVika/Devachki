@@ -1,6 +1,6 @@
 from flask import Flask
 from models import db
-from views import MainView, LoginView, LogoutView, SignupView, LocalView, RegionalView, FederalView, UserView
+from views import MainView, LoginView, LogoutView, SignupView, LocalView, RegionalView, FederalView, UserView, AddStaffView, ChangeView
 from flask import render_template
 from flask_login import LoginManager
 from components.auth import load_user
@@ -17,9 +17,11 @@ def create_app():
     app.add_url_rule('/login', view_func=LoginView.as_view('login'),methods=['GET', 'POST'])
     app.add_url_rule('/signup', view_func=SignupView.as_view('signup'),methods=['GET', 'POST'])
     app.add_url_rule('/local/<int:dep_id>', view_func=LocalView.as_view('local'), methods=['GET', 'POST'])
-    app.add_url_rule('/regional/<int:parent_id>', view_func=RegionalView.as_view('regional'), methods=['GET', 'POST'])
-    app.add_url_rule('/federal/<int:parent_id>', view_func=FederalView.as_view('federal'), methods=['GET', 'POST'])
+    app.add_url_rule('/regional/<int:dep_id>', view_func=RegionalView.as_view('regional'), methods=['GET', 'POST'])
+    app.add_url_rule('/federal/<int:dep_id>', view_func=FederalView.as_view('federal'), methods=['GET', 'POST'])
     app.add_url_rule('/user/<int:user_id>', view_func=UserView.as_view('user'), methods=['GET', 'POST'])
+    app.add_url_rule('/add_staff', view_func=AddStaffView.as_view('add_staff'),methods=['GET', 'POST'])
+    app.add_url_rule('/change/<int:user_id>/<int:var>', view_func=ChangeView.as_view('change'),methods=['GET', 'POST'])
     db.init_app(app)
 
     return app
@@ -27,7 +29,7 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     with app.app_context():
-        from models import *
+        #from models import *
 
         #db.session.remove()
         #db.drop_all()

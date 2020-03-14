@@ -8,16 +8,17 @@ from models.user_department import UserDepartment
 from components.auth import LoginUser
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms.signup_form import SignupForm
+import datetime
 
 class SignupView(View):
     def dispatch_request(self):
         if request.method=='POST':
             form=SignupForm()
             if form.validate_on_submit():
-                user=User(name=form.name.data,surname=form.surname.data,email=form.email.data,phone=form.phone.data,department=form.department.data,password=generate_password_hash(form.password.data))
+                user=User(name=form.name.data,surname=form.surname.data,email=form.email.data,phone=form.phone.data,password=generate_password_hash(form.password.data))
                 db.session.add(user)
                 db.session.commit()
-                user_dep_id = UserDepartment(user_id=user.id, department_id=Department.query.filter(Department.name == user.department).first().id)
+                user_dep_id = UserDepartment(user_id=user.id, department_id=Department.query.filter(Department.name == form.department.data).first().id,post="Пользователь",employment_date=datetime.date.today(),dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
                 login_user(LoginUser(user))

@@ -6,12 +6,21 @@
 </head>
 <body>
 <h1>{{dep.name}}</h1>
+{% if loc_dir %}
+<p>Руководитель: <a href="{{url_for('user',user_id=loc_dir.id)}}">{{loc_dir.name}} {{loc_dir.surname}}</a></p>
+<p>Телефон: {{ loc_dir.phone }}</p>
+<p>E-mail: {{ loc_dir.email }}</p>
+{% endif %}
+<p>Заместители руководителя:</p>
+{% for zam in loc_zam %}
+<a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+{% endfor %}
 <p>Список сотрудников:</p><br>
-{% for user in users%}
+{% for user in staff%}
 <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a><br><br>
 {% endfor %}
 
-<a href="{{url_for('regional',parent_id=parent.id)}}">Региональное отделение</a>
+<a href="{{url_for('regional',dep_id=parent.id)}}">Региональное отделение</a>
 
 <form action="{{url_for('user',user_id=user_id)}}">
     <button type="submit">Моя страница</button>
