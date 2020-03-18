@@ -7,46 +7,53 @@
 <body>
 <p>Имя: {{user.name}}</p>
 <p>Фамилия: {{user.surname}}</p>
-{% if our_dep_id==dep.id %}
-<p>E-mail: {{user.email}}</p>
-<p>Телефон: {{user.phone}}</p><br>
-{% endif %}
-<a href="{{url_for('local',dep_id=dep.id)}}">Отделение</a>
-<br>
-{% if user.id==cur_user_id %}
-    {% if director %}
-        <form action="/add_staff">
-            <button type="submit">Принять сотрудников</button>
+{% if current_user.is_authenticated %}
+    {% if dis_indic or local_indic and post!='Пользователь'%}
+        <p>E-mail: {{user.email}}</p>
+        <p>Телефон: {{user.phone}}</p><br>
+        <p>Должности сотрудника: </p>
+        {% for post in user_posts %}
+        <p>{{ post.post }} c {{ post.employment_date }}{% if post.dismissal_date %} по {{ post.dismissal_date }}{% endif %}</p>
+        {% endfor %}
+    {% endif %}
+    <a href="{{url_for('local',dep_id=dep.id)}}">{{ dep.name }}</a>
+    <br>
+
+    {% if user.id==cur_user_id %}
+        {% if post!='Сотрудник' and post!='Пользователь' %}
+            <form action="/add_staff">
+                <button type="submit">Принять сотрудников</button>
+            </form>
+        {% endif %}
+    {% else %}
+            {% for act in actions %}
+                {% if act in opportunities%}
+                    {% if dis_indic %}
+                        <form action="{{url_for('change',user_id=user.id,var=act)}}">
+                            <button type="submit">{{actions[act][0]}}</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+    {% if get_flashed_messages() %}
+        <p>{{ get_flashed_messages()[0] }}</p>
+    {% endif %}
+        <form action="{{url_for('user',user_id=cur_user_id)}}">
+            <button type="submit">Моя страница</button>
         </form>
     {% endif %}
+    <br>
+    <form action="/logout">
+        <button type="submit">Выйти</button>
+    </form>
 {% else %}
-    {% if director %}
-        <form action="{{url_for('change',user_id=user.id,var=1)}}">
-            <button type="submit">Назначить заместителем рукводителя федерального отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=2)}}">
-            <button type="submit">Назначить рукводителем регинального отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=3)}}">
-            <button type="submit">Назначить заместителем рукводителя регионального отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=4)}}">
-            <button type="submit">Назначить рукводителем местного отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=5)}}">
-            <button type="submit">Назначить заместителем рукводителя местного отделения</button>
-        </form>
-        <form action="{{url_for('change',user_id=user.id,var=6)}}">
-            <button type="submit">Уволить</button>
-        </form>
-        {% endif %}
-    <form action="{{url_for('user',user_id=cur_user_id)}}">
-        <button type="submit">Моя страница</button>
+    <p>Просмотр страницы доступен только сотрудникам</p>
+    <form action="/login">
+        <button>Войти</button>
+    </form>
+    <form action="/signup">
+        <button>Зарегистрироваться</button>
     </form>
 {% endif %}
-<br>
-<form action="/logout">
-    <button type="submit">Выйти</button>
-</form>
 </body>
 </html>

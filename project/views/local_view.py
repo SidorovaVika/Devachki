@@ -9,7 +9,7 @@ from models.departments import Department
 class LocalView(View):
     def dispatch_request(self, dep_id):
         dep=Department.query.filter(Department.id==dep_id).first()
-        staff = User.query.join(User.user_departments).filter(UserDepartment.department_id==dep_id).filter(UserDepartment.dismissal_date.is_(None)).filter(UserDepartment.post=="Сотрудник").all()
+        staff = User.query.join(User.user_departments).filter(UserDepartment.department_id==dep_id).filter(UserDepartment.dismissal_date.is_(None)).filter(UserDepartment.post!="Пользователь").filter(UserDepartment.post!="Руководитель Местного Отделения").filter(UserDepartment.post!="Заместитель Руководителя Местного Отделения").all()
         parent=Department.query.filter(Department.id==dep.parent_id).first()
         user_id=current_user.get_id()
         loc_dir=User.query.join(User.user_departments).filter(UserDepartment.department_id==dep_id).filter(UserDepartment.dismissal_date.is_(None)).filter(UserDepartment.post=="Руководитель Местного Отделения").first()

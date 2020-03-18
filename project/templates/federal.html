@@ -17,7 +17,14 @@
 {% endfor %}
 <p>Список отделений (количество сотрудников):</p>
 {% for i in range(chil|length) %}
-<p><a href="{{url_for('regional',dep_id=chil[i].id)}}">{{chil[i].name}}</a>     {{chil_chil[i]}}</p>
+
+        <p><a href="{{url_for('regional',dep_id=chil[i].id)}}">{{chil[i].name}}</a>
+            {% if chil_chil[i] %}
+            {{chil_chil[i]}}
+            {% else %}
+                Нет сотрудников
+            {% endif %}
+        </p>
 {% endfor %}
 <form action="{{url_for('user',user_id=user_id)}}">
     <button type="submit">Моя страница</button>

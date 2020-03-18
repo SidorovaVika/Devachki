@@ -21,7 +21,7 @@ def create_app():
     app.add_url_rule('/federal/<int:dep_id>', view_func=FederalView.as_view('federal'), methods=['GET', 'POST'])
     app.add_url_rule('/user/<int:user_id>', view_func=UserView.as_view('user'), methods=['GET', 'POST'])
     app.add_url_rule('/add_staff', view_func=AddStaffView.as_view('add_staff'),methods=['GET', 'POST'])
-    app.add_url_rule('/change/<int:user_id>/<int:var>', view_func=ChangeView.as_view('change'),methods=['GET', 'POST'])
+    app.add_url_rule('/change/<int:user_id>/<string:var>', view_func=ChangeView.as_view('change'),methods=['GET', 'POST'])
     db.init_app(app)
 
     return app
