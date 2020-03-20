@@ -35,6 +35,17 @@
                     {% endif %}
                 {% endif %}
             {% endfor %}
+        {% if dis_indic %}
+            {% if advisor_indic %}
+                <form action="{{url_for('change',user_id=user.id,var='dis_advisor')}}">
+                    <button type="submit">Удалить из консультационного совета</button>
+                </form>
+            {% else %}
+                <form action="{{url_for('change',user_id=user.id,var='advisor')}}">
+                    <button type="submit">Добавить в консультационный совет</button>
+                </form>
+            {% endif %}
+        {% endif %}
     {% if get_flashed_messages() %}
         <p>{{ get_flashed_messages()[0] }}</p>
     {% endif %}

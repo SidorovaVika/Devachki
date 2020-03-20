@@ -6,6 +6,7 @@ from models.user import User
 from models.user_department import UserDepartment
 from sqlalchemy import func
 from models import db
+from models.advisory_board import Advisor
 
 class RegionalView(View):
     def dispatch_request(self,dep_id):
@@ -26,4 +27,6 @@ class RegionalView(View):
         reg_zam = User.query.join(User.user_departments).filter(UserDepartment.department_id.in_([i.id for i in chil])).filter(
             UserDepartment.dismissal_date.is_(None)).filter(
             UserDepartment.post == "Заместитель Руководителя Регионального Отделения").all()
-        return render_template('regional.html',chil=chil,parent=parent,user_id=current_user.get_id(),dep=dep,count_users=count_users, reg_dir=reg_dir, reg_zam=reg_zam)
+        advis_id=[i.user_id for i in Advisor.query.filter(Advisor.department_id==dep_id).filter(Advisor.dismissal_date==None).all()]
+        advisors=User.query.filter(User.id.in_(advis_id)).all()
+        return render_template('regional.html',chil=chil,parent=parent,user_id=current_user.get_id(),dep=dep,count_users=count_users, reg_dir=reg_dir, reg_zam=reg_zam, advisors=advisors)

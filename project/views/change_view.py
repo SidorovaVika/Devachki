@@ -2,6 +2,7 @@ from flask.views import View
 from flask import render_template, request, redirect, url_for, flash
 from models.user import User
 from flask_login import current_user
+from models.advisory_board import Advisor
 from models.user_department import UserDepartment
 from models.departments import Department
 import datetime
@@ -18,6 +19,12 @@ class ChangeView(View):
         user_reg_dep=Department.query.filter(Department.id==user_loc_dep).first().parent_id
         chil=Department.query.filter(Department.parent_id==user_reg_dep).all()
         chil_id=[i.id for i in chil]
+        if role=="Руководитель Федерального Отделения":
+            main_dep_id=1
+        if role=="Руководитель Регионального Отделения":
+            main_dep_id=Department.query.filter(Department.id==UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id).first().parent_id
+        if role=="Руководитель Местного Отделения":
+            main_dep_id=UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id
 
         if var=='add_staff':
             UserDepartment.query.filter(
@@ -35,7 +42,19 @@ class ChangeView(View):
             return redirect(url_for('add_staff'))
 
 
+        if var=='advisor':
+            advis = Advisor(user_id=user_id, department_id=main_dep_id,
+                                             employment_date=datetime.date.today(), dismissal_date=None)
+            db.session.add(advis)
+            db.session.commit()
+            flash("Успешно")
 
+        if var=='dis_advisor':
+            Advisor.query.filter(
+                    Advisor.user_id == user_id).filter(
+                    Advisor.dismissal_date == None).filter(Advisor.department_id==main_dep_id).first().dismissal_date = datetime.date.today()
+            db.session.commit()
+            flash("Успешно")
 
         if var=='add_federal_zam':
             if UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().post=="Заместитель Руководителя Федерального Отделения":
@@ -176,22 +195,3 @@ class ChangeView(View):
                 flash("Успешно")
 
         return redirect(url_for('user',user_id=user_id))
-
-    """def dispatch_request(self, users, var):
-            users_id=[i.id for i in users]
-            if var == 'add_all_staff':
-                users_deps=UserDepartment.query.filter(
-                    UserDepartment.user_id.in_(users_id)).all()
-                for i in users_deps:
-                    i.dismissal_date = datetime.date.today()
-                    db.session.commit()
-                    user_dep_id = UserDepartment(user_id=i.user_id, department_id=UserDepartment.query.filter(
-                    UserDepartment.user_id == i.user_id).first().department_id, post="Сотрудник",
-                                             employment_date=datetime.date.today(), dismissal_date=None)
-                    db.session.add(user_dep_id)
-                    db.session.commit()
-                users = User.query.join(User.user_departments).filter(UserDepartment.post == "Пользователь").filter(
-                    UserDepartment.dismissal_date.is_(None)).all()
-                user_id = current_user.get_id()
-                flash("Успешно")
-                return render_template('add_staff.html', users=users, user_id=user_id)"""

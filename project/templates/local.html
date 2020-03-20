@@ -11,15 +11,26 @@
 <p>Телефон: {{ loc_dir.phone }}</p>
 <p>E-mail: {{ loc_dir.email }}</p>
 {% endif %}
-<p>Заместители руководителя:</p>
-{% for zam in loc_zam %}
-<a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
-{% endfor %}
-<p>Список сотрудников:</p><br>
-{% for user in staff%}
-<a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a><br><br>
-{% endfor %}
-
+{% if loc_zam %}
+    <p>Заместители руководителя:</p>
+    {% for zam in loc_zam %}
+    <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+    {% endfor %}
+{% endif %}
+{% if advisors %}
+    <p>Консультационный совет:</p>
+    {% for advis in advisors %}
+        <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
+    {% endfor %}
+{% endif %}
+{% if staff %}
+    <p>Список сотрудников:</p><br>
+    {% for user in staff%}
+    <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a><br><br>
+    {% endfor %}
+{% else %}
+    <p>В данном отделении нет сотрудников</p>
+{% endif %}
 <a href="{{url_for('regional',dep_id=parent.id)}}">{{ parent.name }}</a>
 
 <form action="{{url_for('user',user_id=user_id)}}">

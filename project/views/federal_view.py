@@ -4,6 +4,7 @@ from models.departments import Department
 from flask_login import current_user
 from models.user_department import UserDepartment
 from models.user import User
+from models.advisory_board import Advisor
 
 class FederalView(View):
     def dispatch_request(self,dep_id):
@@ -26,4 +27,6 @@ class FederalView(View):
         fed_zam = User.query.join(User.user_departments).filter(
             UserDepartment.dismissal_date.is_(None)).filter(
             UserDepartment.post == "Заместитель Руководителя Федерального Отделения").all()
-        return render_template('federal.html',chil=chil,user_id=current_user.get_id(),dep=dep,chil_chil=chil_chil,director=director,fed_zam=fed_zam)
+        advis_id=[i.user_id for i in Advisor.query.filter(Advisor.department_id==dep_id).filter(Advisor.dismissal_date==None).all()]
+        advisors=User.query.filter(User.id.in_(advis_id)).all()
+        return render_template('federal.html',chil=chil,user_id=current_user.get_id(),dep=dep,chil_chil=chil_chil,director=director,fed_zam=fed_zam,advisors=advisors)

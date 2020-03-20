@@ -4,6 +4,7 @@ import csv
 from models.departments import Department
 from models import db
 from models.user import User
+from models.advisory_board import Advisor
 from models.user_department import UserDepartment
 from werkzeug.security import generate_password_hash
 import datetime
@@ -82,6 +83,8 @@ def create_random_users():
                 if not(User.query.filter(User.email==row[2]).first()):
                     db.session.add(User(name=row[1], surname=row[0],email=row[2],phone=row[3],password=generate_password_hash("1234")))
                     db.session.commit()
+                    loc_deps_id = [i.id for i in Department.query.filter(Department.level == 3).all()]
+                    dep_id=random.choice(loc_deps_id)
                     if row[4]=="":
                         row[4]=None
                     if row[5]=="":
@@ -91,9 +94,17 @@ def create_random_users():
                             row[6]=None
                         if row[7]=="":
                             row[7]=None
-                    loc_deps_id=[i.id for i in Department.query.filter(Department.level==3).all()]
-                    db.session.add(UserDepartment(user_id=User.query.filter(User.email==row[2]).first().id,department_id=random.choice(loc_deps_id),post="Пользователь",employment_date=row[4],dismissal_date=row[5]))
-                    db.session.commit()
+                        db.session.add(Advisor(user_id=User.query.filter(User.email == row[2]).first().id,
+                                               department_id=dep_id,
+                                               employment_date=row[6], dismissal_rate=row[7]))
+                        db.session.commit()
+                        db.session.add(UserDepartment(user_id=User.query.filter(User.email == row[2]).first().id,
+                                                      department_id=dep_id, post="Сотрудник",
+                                                      employment_date=row[4], dismissal_date=row[5]))
+                        db.session.commit()
+                    else:
+                        db.session.add(UserDepartment(user_id=User.query.filter(User.email==row[2]).first().id,department_id=random.choice(loc_deps_id),post="Пользователь",employment_date=row[4],dismissal_date=row[5]))
+                        db.session.commit()
                     print('Успех')
 
 if __name__ == '__main__':
