@@ -2,6 +2,7 @@ from flask.views import View
 from flask import render_template
 from flask_login import current_user
 from models.user import User
+from models.advisory_board import Advisor
 from models.departments import Department
 from models.user_department import UserDepartment
 
@@ -41,7 +42,6 @@ class UserView(View):
         user_posts=UserDepartment.query.filter(UserDepartment.user_id==user_id).all()
         dep_id=UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id
         dep=Department.query.filter(Department.id == dep_id).first()
-        print([(i.name, i.name) for i in Department.query.filter(Department.level==3).all()])
         user_regional_dep_id=dep.parent_id
         cur_user_id = int(current_user.get_id())
         our_dep_id = UserDepartment.query.filter(UserDepartment.user_id == cur_user_id).first().department_id
@@ -59,23 +59,23 @@ class UserView(View):
 
 
         if post=='Руководитель Федерального Отделения':
-            if user_post=='Заместитель Руководителя Федерального Отделения' or user_post=='Руководитель Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Сотрудник' or user_post=='Пользователь':
+            if user_post=='Заместитель Руководителя Федерального Отделения' or user_post=='Руководитель Регионального Отделения' or user_post=='Заместитель Руководителя Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Заместитель Руководителя Местного Отделения'or user_post=='Сотрудник' or user_post=='Пользователь':
                 dis_indic=True
 
         if post == 'Заместитель Руководителя Федерального Отделения':
-            if user_post=='Руководитель Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Сотрудник' or user_post=='Пользователь':
+            if user_post=='Руководитель Регионального Отделения' or user_post=='Заместитель Руководителя Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Заместитель Руководителя Местного Отделения'or user_post=='Сотрудник' or user_post=='Пользователь':
                 dis_indic=True
 
 
         if post == 'Руководитель Регионального Отделения':
             if regional_indic:
-                if user_post == 'Заместитель Руководителя Регионального Отделения' or user_post == 'Руководитель Местного Отделения' or user_post == 'Сотрудник' or user_post=='Пользователь':
+                if user_post=='Заместитель Руководителя Регионального Отделения' or user_post=='Руководитель Местного Отделения' or user_post=='Заместитель Руководителя Местного Отделения'or user_post=='Сотрудник' or user_post=='Пользователь':
                     dis_indic = True
 
 
         if post == 'Заместитель Руководителя Регионального Отделения':
             if regional_indic:
-                if user_post == 'Руководитель Местного Отделения' or user_post == 'Сотрудник' or user_post=='Пользователь':
+                if user_post=='Руководитель Местного Отделения' or user_post=='Заместитель Руководителя Местного Отделения'or user_post=='Сотрудник' or user_post=='Пользователь':
                     dis_indic = True
 
 
@@ -91,4 +91,15 @@ class UserView(View):
                     dis_indic = True
 
 
-        return render_template('user.html',user=user,dep=dep,cur_user_id=cur_user_id,local_indic=local_indic,opportunities=opportunities,actions=actions,regional_indic=regional_indic,post=post, dis_indic=dis_indic, user_posts=user_posts)
+        if post=="Руководитель Федерального Отделения":
+            main_dep_id=1
+        if post=="Руководитель Регионального Отделения":
+            main_dep_id=Department.query.filter(Department.id==UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id).first().parent_id
+        if post=="Руководитель Местного Отделения":
+            main_dep_id=UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id
+
+
+        advisor_indic=Advisor.query.filter(Advisor.user_id == user_id).filter(Advisor.dismissal_date == None).filter(
+            Advisor.department_id == main_dep_id).first()
+
+        return render_template('user.html',user=user,dep=dep,cur_user_id=cur_user_id,local_indic=local_indic,opportunities=opportunities,actions=actions,regional_indic=regional_indic,post=post, dis_indic=dis_indic, user_posts=user_posts, advisor_indic=advisor_indic)

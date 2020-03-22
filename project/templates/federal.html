@@ -11,10 +11,18 @@
 <p>Телефон: {{ director.phone }}</p>
 <p>E-mail: {{ director.email }}</p>
 {% endif %}
-<p>Заместители руководителя:</p>
-{% for zam in fed_zam %}
-<a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
-{% endfor %}
+{% if fed_zam %}
+    <p>Заместители руководителя:</p>
+    {% for zam in fed_zam %}
+    <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+    {% endfor %}
+{% endif %}
+{% if advisors %}
+    <p>Консультационный совет:</p>
+    {% for advis in advisors %}
+        <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
+    {% endfor %}
+{% endif %}
 <p>Список отделений (количество сотрудников):</p>
 {% for i in range(chil|length) %}
 
