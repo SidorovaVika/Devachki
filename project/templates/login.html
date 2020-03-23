@@ -5,6 +5,7 @@
     <title>Вход</title>
 </head>
 <body>
+<big>
 <form action="/login" method="post">
    {{form.csrf_token}}
     {{form.email.label}} <br>{{form.email()}}<br>
@@ -29,6 +30,9 @@
     <br>
     <button type="submit">Войти</button>
 </form>
-
+<form action="/signup">
+    <button>Зарегистрироваться</button>
+</form>
+</big>
 </body>
 </html>

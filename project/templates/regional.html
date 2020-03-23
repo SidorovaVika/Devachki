@@ -6,39 +6,51 @@
 </head>
 <body>
 <h1>{{dep.name}}</h1>
-{% if reg_dir %}
-<p>Руководитель: <a href="{{url_for('user',user_id=reg_dir.id)}}">{{reg_dir.name}} {{reg_dir.surname}}</a></p>
-<p>Телефон: {{ reg_dir.phone }}</p>
-<p>E-mail: {{ reg_dir.email }}</p>
-{% endif %}
-{% if reg_zam %}
-    <p>Заместители руководителя:</p>
-    {% for zam in reg_zam %}
-    <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+<big>
+{% if current_user.is_authenticated %}
+    {% if reg_dir %}
+    <p>Руководитель: <a href="{{url_for('user',user_id=reg_dir.id)}}">{{reg_dir.name}} {{reg_dir.surname}}</a></p>
+    <p>Телефон: {{ reg_dir.phone }}</p>
+    <p>E-mail: {{ reg_dir.email }}</p>
+    {% endif %}
+    {% if reg_zam %}
+        <p>Заместители руководителя:</p>
+        {% for zam in reg_zam %}
+        <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+    {% if advisors %}
+        <p>Консультационный совет:</p>
+        {% for advis in advisors %}
+            <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+    <p>Список отделений (количество сотрудников):</p><br>
+    {% for chi in chil %}
+    <p><a href="{{url_for('local',dep_id=chi.id)}}">{{chi.name}}</a>
+        {% if count_users[chi.id] %}
+        {{count_users[chi.id]}}
+    {% else %}
+    Нет сотрудников
+    {% endif %}</p>
     {% endfor %}
-{% endif %}
-{% if advisors %}
-    <p>Консультационный совет:</p>
-    {% for advis in advisors %}
-        <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
-    {% endfor %}
-{% endif %}
-<p>Список отделений (количество сотрудников):</p><br>
-{% for chi in chil %}
-<p><a href="{{url_for('local',dep_id=chi.id)}}">{{chi.name}}</a>
-    {% if count_users[chi.id] %}
-    {{count_users[chi.id]}}
+    <a href="{{url_for('federal',dep_id=parent.id)}}">{{parent.name}}</a>
+    <form action="{{url_for('user',user_id=user_id)}}">
+        <button type="submit">Моя страница</button>
+    </form>
+    <br>
+    <form action="/logout">
+        <button type="submit">Выйти</button>
+    </form>
 {% else %}
-Нет сотрудников
-{% endif %}</p>
-{% endfor %}
-<a href="{{url_for('federal',dep_id=parent.id)}}">{{parent.name}}</a>
-<form action="{{url_for('user',user_id=user_id)}}">
-    <button type="submit">Моя страница</button>
-</form>
-<br>
-<form action="/logout">
-    <button type="submit">Выйти</button>
-</form>
+    <p>Просмотр страницы доступен только сотрудникам</p>
+    <form action="/login">
+        <button>Войти</button>
+    </form>
+    <form action="/signup">
+        <button>Зарегистрироваться</button>
+    </form>
+{% endif %}
+</big>
 </body>
 </html>

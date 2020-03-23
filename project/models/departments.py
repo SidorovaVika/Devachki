@@ -1,4 +1,3 @@
-from sqlalchemy import func
 from models import db
 
 class Department(db.Model):

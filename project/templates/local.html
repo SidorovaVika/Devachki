@@ -6,39 +6,51 @@
 </head>
 <body>
 <h1>{{dep.name}}</h1>
-{% if loc_dir %}
-<p>Руководитель: <a href="{{url_for('user',user_id=loc_dir.id)}}">{{loc_dir.name}} {{loc_dir.surname}}</a></p>
-<p>Телефон: {{ loc_dir.phone }}</p>
-<p>E-mail: {{ loc_dir.email }}</p>
-{% endif %}
-{% if loc_zam %}
-    <p>Заместители руководителя:</p>
-    {% for zam in loc_zam %}
-    <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
-    {% endfor %}
-{% endif %}
-{% if advisors %}
-    <p>Консультационный совет:</p>
-    {% for advis in advisors %}
-        <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
-    {% endfor %}
-{% endif %}
-{% if staff %}
-    <p>Список сотрудников:</p><br>
-    {% for user in staff%}
-    <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a><br><br>
-    {% endfor %}
-{% else %}
-    <p>В данном отделении нет сотрудников</p>
-{% endif %}
-<a href="{{url_for('regional',dep_id=parent.id)}}">{{ parent.name }}</a>
+<big>
+{% if current_user.is_authenticated %}
+    {% if loc_dir %}
+    <p>Руководитель: <a href="{{url_for('user',user_id=loc_dir.id)}}">{{loc_dir.name}} {{loc_dir.surname}}</a></p>
+    <p>Телефон: {{ loc_dir.phone }}</p>
+    <p>E-mail: {{ loc_dir.email }}</p>
+    {% endif %}
+    {% if loc_zam %}
+        <p>Заместители руководителя:</p>
+        {% for zam in loc_zam %}
+        <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+    {% if advisors %}
+        <p>Консультационный совет:</p>
+        {% for advis in advisors %}
+            <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+    {% if staff %}
+        <p>Список сотрудников:</p><br>
+        {% for user in staff%}
+        <a href="{{url_for('user',user_id=user.id)}}">{{user.name}} {{user.surname}}</a><br><br>
+        {% endfor %}
+    {% else %}
+        <p>В данном отделении нет сотрудников</p>
+    {% endif %}
+    <a href="{{url_for('regional',dep_id=parent.id)}}">{{ parent.name }}</a>
 
-<form action="{{url_for('user',user_id=user_id)}}">
-    <button type="submit">Моя страница</button>
-</form>
-<br>
-<form action="/logout">
-    <button type="submit">Выйти</button>
-</form>
+    <form action="{{url_for('user',user_id=user_id)}}">
+        <button type="submit">Моя страница</button>
+    </form>
+    <br>
+    <form action="/logout">
+        <button type="submit">Выйти</button>
+    </form>
+{% else %}
+    <p>Просмотр страницы доступен только сотрудникам</p>
+    <form action="/login">
+        <button>Войти</button>
+    </form>
+    <form action="/signup">
+        <button>Зарегистрироваться</button>
+    </form>
+{% endif %}
+</big>
 </body>
 </html>

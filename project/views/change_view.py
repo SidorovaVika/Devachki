@@ -11,24 +11,25 @@ from models import db
 
 class ChangeView(View):
 
-
     def dispatch_request(self, user_id, var):
-        user=User.query.filter(User.id==current_user.get_id()).first()
-        role = user.get_role()
-        user_loc_dep=UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().department_id
-        user_reg_dep=Department.query.filter(Department.id==user_loc_dep).first().parent_id
-        chil=Department.query.filter(Department.parent_id==user_reg_dep).all()
-        chil_id=[i.id for i in chil]
-        if role=="Руководитель Федерального Отделения":
-            main_dep_id=1
-        if role=="Руководитель Регионального Отделения":
-            main_dep_id=Department.query.filter(Department.id==UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id).first().parent_id
-        if role=="Руководитель Местного Отделения":
-            main_dep_id=UserDepartment.query.filter(UserDepartment.user_id==user.id).first().department_id
+        user = User.query.filter(User.id == current_user.get_id()).first()
+        role=UserDepartment.query.filter(UserDepartment.user_id==user.id,UserDepartment.dismissal_date == None).first().post
+        user_loc_dep = UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
+            UserDepartment.dismissal_date == None).first().department_id
+        user_reg_dep = Department.query.filter(Department.id == user_loc_dep).first().parent_id
+        chil = Department.query.filter(Department.parent_id == user_reg_dep).all()
+        chil_id = [i.id for i in chil]
+        if role == "Руководитель Федерального Отделения":
+            main_dep_id = 1
+        if role == "Руководитель Регионального Отделения":
+            main_dep_id = Department.query.filter(Department.id == UserDepartment.query.filter(
+                UserDepartment.user_id == user.id).first().department_id).first().parent_id
+        if role == "Руководитель Местного Отделения":
+            main_dep_id = UserDepartment.query.filter(UserDepartment.user_id == user.id).first().department_id
 
-        if var=='add_staff':
+        if var == 'add_staff':
             UserDepartment.query.filter(
-                UserDepartment.user_id == user_id).first().dismissal_date=datetime.date.today()
+                UserDepartment.user_id == user_id).first().dismissal_date = datetime.date.today()
             db.session.commit()
             user_dep_id = UserDepartment(user_id=user_id, department_id=UserDepartment.query.filter(
                 UserDepartment.user_id == user_id).first().department_id, post="Сотрудник",
@@ -41,30 +42,39 @@ class ChangeView(View):
             flash("Успешно")
             return redirect(url_for('add_staff'))
 
+        if var == 'advisor':
+            if UserDepartment.query.filter(UserDepartment.user_id == user_id,
+                                           UserDepartment.dismissal_date == None).first().post == "Пользователь":
+                flash("Данный пользователь не является сотрудником")
+            else:
+                advis = Advisor(user_id=user_id, department_id=main_dep_id,
+                                employment_date=datetime.date.today(), dismissal_date=None)
+                db.session.add(advis)
+                db.session.commit()
+                flash("Успешно")
 
-        if var=='advisor':
-            advis = Advisor(user_id=user_id, department_id=main_dep_id,
-                                             employment_date=datetime.date.today(), dismissal_date=None)
-            db.session.add(advis)
-            db.session.commit()
-            flash("Успешно")
-
-        if var=='dis_advisor':
+        if var == 'dis_advisor':
             Advisor.query.filter(
-                    Advisor.user_id == user_id).filter(
-                    Advisor.dismissal_date == None).filter(Advisor.department_id==main_dep_id).first().dismissal_date = datetime.date.today()
+                Advisor.user_id == user_id).filter(
+                Advisor.dismissal_date == None).filter(
+                Advisor.department_id == main_dep_id).first().dismissal_date = datetime.date.today()
             db.session.commit()
             flash("Успешно")
 
-        if var=='add_federal_zam':
-            if UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().post=="Заместитель Руководителя Федерального Отделения":
+        if var == 'add_federal_zam':
+            if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().post == "Заместитель Руководителя Федерального Отделения":
                 flash("Данный сотрудник уже на этой должности")
-            elif len(UserDepartment.query.filter(UserDepartment.post=="Заместитель Руководителя Федерального Отделения").filter(UserDepartment.dismissal_date == None).all())<3:
+            elif len(UserDepartment.query.filter(
+                    UserDepartment.post == "Заместитель Руководителя Федерального Отделения").filter(
+                UserDepartment.dismissal_date == None).all()) < 3:
                 UserDepartment.query.filter(
-                    UserDepartment.user_id == user_id).filter(UserDepartment.dismissal_date == None).first().dismissal_date = datetime.date.today()
+                    UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().dismissal_date = datetime.date.today()
                 db.session.commit()
                 user_dep_id = UserDepartment(user_id=user_id, department_id=UserDepartment.query.filter(
-                    UserDepartment.user_id == user_id).first().department_id, post="Заместитель Руководителя Федерального Отделения",
+                    UserDepartment.user_id == user_id).first().department_id,
+                                             post="Заместитель Руководителя Федерального Отделения",
                                              employment_date=datetime.date.today(), dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
@@ -72,16 +82,14 @@ class ChangeView(View):
             else:
                 flash("Данная вакансия недоступна")
 
-
-
-
-        if var=='add_regional_director':
+        if var == 'add_regional_director':
             if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
                     UserDepartment.dismissal_date == None).first().post == "Руководитель Регионального Отделения":
                 flash("Данный сотрудник уже на этой должности")
             elif UserDepartment.query.filter(
-                    UserDepartment.post == "Руководитель Регионального Отделения").filter(UserDepartment.department_id.in_(chil_id)).filter(
-                    UserDepartment.dismissal_date == None).first():
+                    UserDepartment.post == "Руководитель Регионального Отделения").filter(
+                UserDepartment.department_id.in_(chil_id)).filter(
+                UserDepartment.dismissal_date == None).first():
                 flash("Данная вакансия недоступна")
             else:
                 UserDepartment.query.filter(
@@ -89,25 +97,27 @@ class ChangeView(View):
                     UserDepartment.dismissal_date == None).first().dismissal_date = datetime.date.today()
                 db.session.commit()
                 user_dep_id = UserDepartment(user_id=user_id, department_id=UserDepartment.query.filter(
-                    UserDepartment.user_id == user_id).first().department_id, post="Руководитель Регионального Отделения",
+                    UserDepartment.user_id == user_id).first().department_id,
+                                             post="Руководитель Регионального Отделения",
                                              employment_date=datetime.date.today(), dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
                 flash("Успешно")
 
-
-
-
-        if var=='add_regional_zam':
-            if UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().post=="Заместитель Руководителя Регионального Отделения":
+        if var == 'add_regional_zam':
+            if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().post == "Заместитель Руководителя Регионального Отделения":
                 flash("Данный сотрудник уже на этой должности")
-            elif len(UserDepartment.query.filter(UserDepartment.post=="Заместитель Руководителя Регионального Отделения").filter(UserDepartment.department_id.in_(chil_id)).filter(UserDepartment.dismissal_date == None).all())<3:
+            elif len(UserDepartment.query.filter(
+                    UserDepartment.post == "Заместитель Руководителя Регионального Отделения").filter(
+                UserDepartment.department_id.in_(chil_id)).filter(UserDepartment.dismissal_date == None).all()) < 3:
                 UserDepartment.query.filter(
                     UserDepartment.user_id == user_id).filter(
                     UserDepartment.dismissal_date == None).first().dismissal_date = datetime.date.today()
                 db.session.commit()
                 user_dep_id = UserDepartment(user_id=user_id, department_id=UserDepartment.query.filter(
-                    UserDepartment.user_id == user_id).first().department_id, post="Заместитель Руководителя Регионального Отделения",
+                    UserDepartment.user_id == user_id).first().department_id,
+                                             post="Заместитель Руководителя Регионального Отделения",
                                              employment_date=datetime.date.today(), dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
@@ -115,16 +125,14 @@ class ChangeView(View):
             else:
                 flash("Данная вакансия недоступна")
 
-
-
-
-        if var=='add_local_director':
+        if var == 'add_local_director':
             if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
                     UserDepartment.dismissal_date == None).first().post == "Руководитель Местного Отделения":
                 flash("Данный сотрудник уже на этой должности")
             elif UserDepartment.query.filter(
-                    UserDepartment.post == "Руководитель Местного Отделения").filter(UserDepartment.department_id==user_loc_dep).filter(
-                    UserDepartment.dismissal_date == None).first():
+                    UserDepartment.post == "Руководитель Местного Отделения").filter(
+                UserDepartment.department_id == user_loc_dep).filter(
+                UserDepartment.dismissal_date == None).first():
                 flash("Данная вакансия недоступна")
             else:
                 UserDepartment.query.filter(
@@ -138,18 +146,21 @@ class ChangeView(View):
                 db.session.commit()
                 flash("Успешно")
 
-
-
-
-        if var=='add_local_zam':
-            if UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().post=="Заместитель Руководителя Местного Отделения":
+        if var == 'add_local_zam':
+            if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().post == "Заместитель Руководителя Местного Отделения":
                 flash("Данный сотрудник уже на этой должности")
-            elif len(UserDepartment.query.filter(UserDepartment.post=="Заместитель Руководителя Местного Отделения").filter(UserDepartment.department_id==user_loc_dep).filter(UserDepartment.dismissal_date == None).all())<3:
+            elif len(UserDepartment.query.filter(
+                    UserDepartment.post == "Заместитель Руководителя Местного Отделения").filter(
+                UserDepartment.department_id == user_loc_dep).filter(
+                UserDepartment.dismissal_date == None).all()) < 3:
                 UserDepartment.query.filter(
-                    UserDepartment.user_id == user_id).filter(UserDepartment.dismissal_date == None).first().dismissal_date = datetime.date.today()
+                    UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().dismissal_date = datetime.date.today()
                 db.session.commit()
                 user_dep_id = UserDepartment(user_id=user_id, department_id=UserDepartment.query.filter(
-                    UserDepartment.user_id == user_id).first().department_id, post="Заместитель Руководителя Местного Отделения",
+                    UserDepartment.user_id == user_id).first().department_id,
+                                             post="Заместитель Руководителя Местного Отделения",
                                              employment_date=datetime.date.today(), dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
@@ -157,11 +168,9 @@ class ChangeView(View):
             else:
                 flash("Данная вакансия недоступна")
 
-
-
-
-        if var=='dis_staff':
-            if UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().post=="Пользователь":
+        if var == 'dis_staff':
+            if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().post == "Пользователь":
                 flash("Данный пользователь не является сотрудником")
             else:
                 UserDepartment.query.filter(
@@ -173,14 +182,18 @@ class ChangeView(View):
                                              employment_date=datetime.date.today(), dismissal_date=None)
                 db.session.add(user_dep_id)
                 db.session.commit()
+                advis = Advisor.query.filter(
+                    Advisor.user_id == user_id,
+                    Advisor.dismissal_date == None).all()
+                if advis:
+                    for ad in advis:
+                        ad.dismissal_date = datetime.date.today()
+                db.session.commit()
                 flash("Успешно")
 
-
-
-
-
-        if var=='staff':
-            if UserDepartment.query.filter(UserDepartment.user_id==user_id).filter(UserDepartment.dismissal_date == None).first().post=="Сотрудник":
+        if var == 'staff':
+            if UserDepartment.query.filter(UserDepartment.user_id == user_id).filter(
+                    UserDepartment.dismissal_date == None).first().post == "Сотрудник":
                 flash("Данный сотрудник уже на этой должности")
             else:
                 UserDepartment.query.filter(
@@ -194,4 +207,4 @@ class ChangeView(View):
                 db.session.commit()
                 flash("Успешно")
 
-        return redirect(url_for('user',user_id=user_id))
+        return redirect(url_for('user', user_id=user_id))

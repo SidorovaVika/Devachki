@@ -5,6 +5,8 @@
     <title>Страница пользователя</title>
 </head>
 <body>
+<h1>Страница пользователя</h1>
+<big>
 <p>Имя: {{user.name}}</p>
 <p>Фамилия: {{user.surname}}</p>
 {% if current_user.is_authenticated %}
@@ -26,26 +28,28 @@
             </form>
         {% endif %}
     {% else %}
+        <ul>
+                {% if dis_indic %}
+                    {% if advisor_indic %}
+                        <form action="{{url_for('change',user_id=user.id,var='dis_advisor')}}">
+                            <p><li><button type="submit"><big>Удалить из консультационного совета</big></button></li></p>
+                        </form>
+                    {% else %}
+                        <form action="{{url_for('change',user_id=user.id,var='advisor')}}">
+                            <p><li><button type="submit"><big>Добавить в консультационный совет</big></button></li></p>
+                        </form>
+                    {% endif %}
+                {% endif %}
             {% for act in actions %}
                 {% if act in opportunities%}
                     {% if dis_indic %}
                         <form action="{{url_for('change',user_id=user.id,var=act)}}">
-                            <button type="submit">{{actions[act][0]}}</button>
+                            <li><button type="submit"><big>{{actions[act][0]}}</big></button></li><br>
                         </form>
                     {% endif %}
                 {% endif %}
             {% endfor %}
-        {% if dis_indic %}
-            {% if advisor_indic %}
-                <form action="{{url_for('change',user_id=user.id,var='dis_advisor')}}">
-                    <button type="submit">Удалить из консультационного совета</button>
-                </form>
-            {% else %}
-                <form action="{{url_for('change',user_id=user.id,var='advisor')}}">
-                    <button type="submit">Добавить в консультационный совет</button>
-                </form>
-            {% endif %}
-        {% endif %}
+        </ul>
     {% if get_flashed_messages() %}
         <p>{{ get_flashed_messages()[0] }}</p>
     {% endif %}
@@ -66,5 +70,6 @@
         <button>Зарегистрироваться</button>
     </form>
 {% endif %}
+</big>
 </body>
 </html>

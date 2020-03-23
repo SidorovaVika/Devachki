@@ -6,40 +6,52 @@
 </head>
 <body>
 <h1>{{dep.name}}</h1>
-{% if director %}
-<p>Руководитель: <a href="{{url_for('user',user_id=director.id)}}">{{director.name}} {{director.surname}}</a></p>
-<p>Телефон: {{ director.phone }}</p>
-<p>E-mail: {{ director.email }}</p>
-{% endif %}
-{% if fed_zam %}
-    <p>Заместители руководителя:</p>
-    {% for zam in fed_zam %}
-    <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
-    {% endfor %}
-{% endif %}
-{% if advisors %}
-    <p>Консультационный совет:</p>
-    {% for advis in advisors %}
-        <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
-    {% endfor %}
-{% endif %}
-<p>Список отделений (количество сотрудников):</p>
-{% for i in range(chil|length) %}
+<big>
+{% if current_user.is_authenticated %}
+    {% if director %}
+    <p>Руководитель: <a href="{{url_for('user',user_id=director.id)}}">{{director.name}} {{director.surname}}</a></p>
+    <p>Телефон: {{ director.phone }}</p>
+    <p>E-mail: {{ director.email }}</p>
+    {% endif %}
+    {% if fed_zam %}
+        <p>Заместители руководителя:</p>
+        {% for zam in fed_zam %}
+        <a href="{{url_for('user',user_id=zam.id)}}">{{zam.name}} {{zam.surname}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+    {% if advisors %}
+        <p>Консультационный совет:</p>
+        {% for advis in advisors %}
+            <a href="{{url_for('user',user_id=advis.id)}}">{{advis.name}} {{advis.surname}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+    <p>Список отделений (количество сотрудников):</p>
+    {% for i in range(chil|length) %}
 
-        <p><a href="{{url_for('regional',dep_id=chil[i].id)}}">{{chil[i].name}}</a>
-            {% if chil_chil[i] %}
-            {{chil_chil[i]}}
-            {% else %}
-                Нет сотрудников
-            {% endif %}
-        </p>
-{% endfor %}
-<form action="{{url_for('user',user_id=user_id)}}">
-    <button type="submit">Моя страница</button>
-</form>
-<br>
-<form action="/logout">
-    <button type="submit">Выйти</button>
-</form>
+            <p><a href="{{url_for('regional',dep_id=chil[i].id)}}">{{chil[i].name}}</a>
+                {% if chil_chil[i] %}
+                {{chil_chil[i]}}
+                {% else %}
+                    Нет сотрудников
+                {% endif %}
+            </p>
+    {% endfor %}
+    <form action="{{url_for('user',user_id=user_id)}}">
+        <button type="submit">Моя страница</button>
+    </form>
+    <br>
+    <form action="/logout">
+        <button type="submit">Выйти</button>
+    </form>
+{% else %}
+    <p>Просмотр страницы доступен только сотрудникам</p>
+    <form action="/login">
+        <button>Войти</button>
+    </form>
+    <form action="/signup">
+        <button>Зарегистрироваться</button>
+    </form>
+{% endif %}
+</big>
 </body>
 </html>
