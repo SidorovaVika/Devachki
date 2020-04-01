@@ -9,7 +9,7 @@ from models.user_department import UserDepartment
 
 class UserView(View):
     def dispatch_request(self, user_id):
-
+        main_dep_id=None
         actions = {
             'add_federal_zam': (
                 'Назначить заместителем руководителя федерального отделения', ['Руководитель Федерального Отделения']),
