@@ -1,11 +1,11 @@
-from app import create_app
+from project.app import create_app
 import click
 import csv
-from models.departments import Department
-from models import db
-from models.user import User
-from models.advisory_board import Advisor
-from models.user_department import UserDepartment
+from project.models.departments import Department
+from project.models import db
+from project.models.user import User
+from project.models.advisory_board import Advisor
+from project.models.user_department import UserDepartment
 from werkzeug.security import generate_password_hash
 import datetime
 import random

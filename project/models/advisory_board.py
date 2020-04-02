@@ -1,4 +1,4 @@
-from models import db
+from project.models import db
 
 
 class Advisor(db.Model):

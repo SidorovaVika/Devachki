@@ -1,10 +1,10 @@
 from flask.views import View
 from flask import render_template
 from flask_login import current_user
-from models.user import User
-from models.advisory_board import Advisor
-from models.departments import Department
-from models.user_department import UserDepartment
+from project.models.user import User
+from project.models.advisory_board import Advisor
+from project.models.departments import Department
+from project.models.user_department import UserDepartment
 
 
 class UserView(View):

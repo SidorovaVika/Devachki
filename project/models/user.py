@@ -1,5 +1,5 @@
-from models import db
-from models.user_department import UserDepartment
+from project.models import db
+from project.models.user_department import UserDepartment
 
 
 class User(db.Model):

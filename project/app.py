@@ -1,9 +1,9 @@
 from flask import Flask
-from models import db
-from views import MainView, LoginView, LogoutView, SignupView, LocalView, RegionalView, FederalView, UserView, \
+from project.models import db
+from project.views import MainView, LoginView, LogoutView, SignupView, LocalView, RegionalView, FederalView, UserView, \
     AddStaffView, ChangeView
 from flask_login import LoginManager
-from components.auth import load_user
+from project.components.auth import load_user
 
 
 def create_app():

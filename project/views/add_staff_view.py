@@ -1,9 +1,9 @@
 from flask.views import View
 from flask import render_template
-from models.user import User
+from project.models.user import User
 from flask_login import current_user
-from models.user_department import UserDepartment
-from models.departments import Department
+from project.models.user_department import UserDepartment
+from project.models.departments import Department
 import random
 
 

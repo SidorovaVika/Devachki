@@ -1,13 +1,13 @@
 from flask.views import View
 from flask import render_template, request, redirect, url_for
-from models import db
+from project.models import db
 from flask_login import current_user, login_user
-from models.user import User
-from models.departments import Department
-from models.user_department import UserDepartment
-from components.auth import LoginUser
+from project.models.user import User
+from project.models.departments import Department
+from project.models.user_department import UserDepartment
+from project.components.auth import LoginUser
 from werkzeug.security import generate_password_hash
-from forms.signup_form import SignupForm
+from project.forms.signup_form import SignupForm
 import datetime
 
 

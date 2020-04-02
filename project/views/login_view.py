@@ -1,11 +1,11 @@
 from flask.views import View
 from flask import render_template,redirect, url_for, request
 from flask_login import login_user, current_user
-from models.user import User
-from components.auth import LoginUser
+from project.models.user import User
+from project.components.auth import LoginUser
 from werkzeug.security import check_password_hash
-from forms.login_form import LoginForm
-from models.user_department import UserDepartment
+from project.forms.login_form import LoginForm
+from project.models.user_department import UserDepartment
 
 
 class LoginView(View):
